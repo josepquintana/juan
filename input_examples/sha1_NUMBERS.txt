@@ -1,0 +1,7 @@
+//
+// File Checksum Integrity Verifier version 2.05.
+//
+examplenumbers.txt\*
+	Error msg  : The system cannot find the path specified.
+	Error code : 3
+
