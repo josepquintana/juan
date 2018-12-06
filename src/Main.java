@@ -22,7 +22,7 @@ public class Main
         boolean v = false;
         if(flags[5].equals("yes")) v = true;
 
-        BruteForce.start(n, pathToFile, hashType, mode, e, v, 1000);
+        BruteForce.start(n, pathToFile, hashType, mode, e, v, 5000);
 
         // the program only gets here if no hash coincidence has been found.
         System.out.println("Processing... 100.00%\t################################################## !!!\n");
