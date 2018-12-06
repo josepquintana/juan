@@ -1,4 +1,0 @@
-//
-// File Checksum Integrity Verifier version 2.05.
-//
-7c222fb2927d828af22f592134e8932480637c0d examplepin.txt
