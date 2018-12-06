@@ -1,0 +1,4 @@
+//
+// File Checksum Integrity Verifier version 2.05.
+//
+ec2a2d8d7021907a70e2d97ef359db196d6a5cf77b7b721c726ff73f9af809c9 in\exampleletters.txt
