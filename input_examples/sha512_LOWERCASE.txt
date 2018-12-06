@@ -1,0 +1,4 @@
+//
+// File Checksum Integrity Verifier version 2.05.
+//
+d31256c16934bcfcc8e141c7a1cc94648a774e245bae8ab37c837ce958cfc9982682fcbc8e262c19fe012d21a6336ebd2eff9d57f90406f9a81d6982d5265d45 in\examplelowercase.txt

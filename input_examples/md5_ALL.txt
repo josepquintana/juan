@@ -1,0 +1,4 @@
+//
+// File Checksum Integrity Verifier version 2.05.
+//
+a48524edde1fd2f14f5d422efcb698d2 exampleall.txt

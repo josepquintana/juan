@@ -1,0 +1,4 @@
+//
+// File Checksum Integrity Verifier version 2.05.
+//
+4b61bc42213e745d7e2fbae43f8e0d54ab4a7e3a4340cc922f6805c846946a87161b9551462088a68123cc5866dfe8ddcfed3bbe430b9fa85437776ebf391099 in\exampleuppercase.txt

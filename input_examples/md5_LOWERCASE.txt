@@ -1,0 +1,4 @@
+//
+// File Checksum Integrity Verifier version 2.05.
+//
+234d10a1d50dc56b2c88cad6e28691b1 examplelowercase.txt
