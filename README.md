@@ -1,12 +1,13 @@
 # juan
 Basic program simulating "john the ripper"
 
-Usage: java -jar NumberList.jar
+Usage: java -jar juan.jar
 
     -h, --help
-    -s, --show_hash_types
+    -s, --show_config
     -n, --number 'NUM'
     -f, --file '/path/to/input/file'
     -t, --type_hash
+    -m, --mode
     -e, --exclusive
     -v, --verbose
