@@ -1,7 +1,7 @@
 # juan
 Basic program simulating "john the ripper"
 
-Usage: java -jar juan.jar
+ Usage: java -jar juan.jar
 
     -h, --help
     -s, --show_config
