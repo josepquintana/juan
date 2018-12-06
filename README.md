@@ -10,5 +10,5 @@ Usage: java -jar juan.jar
     -t, --type_hash
     -m, --mode
     -i, --incremental
+    -p, --print_interval 'NUM'
     -v, --verbose
-
