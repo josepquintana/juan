@@ -9,19 +9,20 @@ import java.util.Scanner;
 public class EvaluateArgs
 {
     private static ArrayList<String> types;
+    private static ArrayList<String> modes;
 
     public static String[] evaluateArgs(String[] args) throws Exception {
 
-        types = new ArrayList<>();
-        knownHashTypes();
+        types = new ArrayList<>(); setTypes();
+        modes = new ArrayList<>(); setModes();
 
-        String[] flags = new String[5]; // [n, /path/to/file, type_hash, e, v]
-        flags[0] = "0"; flags[1] = ""; flags[2] = ""; flags[3] = "no"; flags[4] = "no";
+        String[] flags = new String[6]; // [n, /path/to/file, type_hash, m, e, v]
+        flags[0] = "0"; flags[1] = ""; flags[2] = ""; flags[3] = "all"; flags[4] = "no"; flags[5] = "no";
 
         if (args.length >= 1 && (args[0].equals("-h") || args[0].equals("--help"))) { printUsageAndExit(); }
-        if (args.length >= 1 && (args[0].equals("-s") || args[0].equals("--show_hash_types"))) { printKnownHashTypesAndExit(); }
+        if (args.length >= 1 && (args[0].equals("-s") || args[0].equals("--show_config"))) { printConfigAndExit(); }
 
-        boolean n = false, f = false, t = false, e = false, v = false;
+        boolean n = false, f = false, t = false, m = false, e = false, v = false;
         for (int i = 0; i < args.length; i++)
         {
             if (args[i].equals("-n") || args[i].equals("--number")) {
@@ -45,14 +46,21 @@ public class EvaluateArgs
                 flags[2] = args[i+1]; ++i;
                 t = true;
             }
+            else if (args[i].equals("-m") || args[i].equals("--mode")) {
+                if(m) printErrorDuplicateFlagAndExit(args[i]);
+                if(i + 1 >= args.length) printUsageAndExit();
+                if(!isKnownMode(args[i+1])) printUnknownModeAndExit(args[i], args[i+1]);
+                flags[3] = args[i+1]; ++i;
+                m = true;
+            }
             else if (args[i].equals("-e") || args[i].equals("--exclusive")) {
                 if(e) printErrorDuplicateFlagAndExit(args[i]);
-                flags[3] = "yes";
+                flags[4] = "yes";
                 e = true;
             }
             else if (args[i].equals("-v") || args[i].equals("--verbose")) {
                 if(v) printErrorDuplicateFlagAndExit(args[i]);
-                flags[4] = "yes";
+                flags[5] = "yes";
                 v = true;
             }
             else {
@@ -113,6 +121,12 @@ public class EvaluateArgs
         System.exit(0);
     }
 
+    private static void printUnknownModeAndExit(String currFlag, String mode) {
+        System.out.println("> Error: The succeeding element of '" + currFlag + "' should be a valid mode.");
+        System.out.println(">> Error: The input is unknown: '" + mode + "'.");
+        System.exit(0);
+    }
+
     private static void printErrorDuplicateFlagAndExit(String currFlag) {
         System.out.println("> Error: The flag '" + currFlag + "' is duplicated.");
         System.exit(0);
@@ -122,18 +136,24 @@ public class EvaluateArgs
         System.out.println("Usage: java -jar NumberList.jar ");
         System.out.println("");
         System.out.println("    -h, --help");
-        System.out.println("    -s, --show_hash_types");
+        System.out.println("    -s, --show_config");
         System.out.println("    -n, --number 'NUM'");
         System.out.println("    -f, --file '/path/to/input/file'");
         System.out.println("    -t, --type_hash");
+        System.out.println("    -m, --mode");
         System.out.println("    -e, --exclusive");
         System.out.println("    -v, --verbose");
         System.out.println("");
         System.exit(0);
     }
 
-    private static void printKnownHashTypesAndExit() {
-        System.out.println("Known hash types: \n");
+    private static void printConfigAndExit() {
+        System.out.println("> Modes: \n");
+        for (int i = 0; i < modes.size(); i++) {
+            System.out.print(modes.get(i) + " \t");
+        }
+        System.out.println("");
+        System.out.println("\n> Known hash types: \n");
         for (int i = 0; i < types.size(); i++) {
             System.out.print(types.get(i) + " \t");
         }
@@ -141,8 +161,17 @@ public class EvaluateArgs
         System.exit(0);
     }
 
-    private static void knownHashTypes() {
+    private static void setTypes() {
         types.add("sha1");
+        types.add("sha256");
+    }
+
+    private static void setModes() {
+        modes.add("all");
+        modes.add("numbers");
+        modes.add("letters");
+        modes.add("lowercase");
+        modes.add("uppercase");
     }
 
     private static boolean isInteger(String s) {
@@ -164,6 +193,13 @@ public class EvaluateArgs
     private static boolean isKnownHash(String s) {
         for (int i = 0; i < types.size(); i++) {
             if(types.get(i).equalsIgnoreCase(s)) return true;
+        }
+        return false;
+    }
+
+    private static boolean isKnownMode(String s) {
+        for (int i = 0; i < modes.size(); i++) {
+            if(modes.get(i).equalsIgnoreCase(s)) return true;
         }
         return false;
     }
