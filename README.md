@@ -9,5 +9,6 @@ Usage: java -jar juan.jar
     -f, --file '/path/to/input/file'
     -t, --type_hash
     -m, --mode
-    -e, --exclusive
+    -i, --incremental
     -v, --verbose
+
