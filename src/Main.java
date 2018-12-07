@@ -32,7 +32,8 @@ public class Main
         BruteForce.start(n, pathToFile, hashType, mode, e, v, printInterval);
     }
 
-    private static void printHelloMessage() throws InterruptedException {
+    private static void printHelloMessage() throws InterruptedException 
+    {
         Thread.sleep(250);
         System.out.println("");
         System.out.println(" ############################################################################################################################");
