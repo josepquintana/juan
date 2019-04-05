@@ -172,7 +172,7 @@ public class EvaluateArgs
         for (int i = 0; i < types.size(); i++) {
             System.out.print(types.get(i) + "      ");
         }
-        System.out.println("");
+        System.out.println("\n");
         System.exit(0);
     }
 
