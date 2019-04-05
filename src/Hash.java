@@ -44,4 +44,29 @@ public class Hash
         return hexString.toString();
     }
 
+    protected static boolean isValidHash(String s, String type) { // only useful if hash is read as an argument via console
+        if(Main.types.get(0).equalsIgnoreCase(type)) return isValidMD5(s);
+        if(Main.types.get(1).equalsIgnoreCase(type)) return isValidSHA1(s);
+        if(Main.types.get(2).equalsIgnoreCase(type)) return isValidSHA256(s);
+        if(Main.types.get(3).equalsIgnoreCase(type)) return isValidSHA512(s);
+        if(type.equalsIgnoreCase("all"))  return (isValidMD5(s) || isValidSHA1(s) || isValidSHA256(s) || isValidSHA512(s));
+        else return false;
+    }
+
+    private static boolean isValidMD5(String s) {
+        return s.matches("^[a-fA-F0-9]{32}$");
+    }
+
+    private static boolean isValidSHA1(String s) {
+        return s.matches("^[a-fA-F0-9]{40}$");
+    }
+
+    private static boolean isValidSHA256(String s) {
+        return s.matches("^[a-fA-F0-9]{64}$");
+    }
+
+    private static boolean isValidSHA512(String s) {
+        return s.matches("^[a-fA-F0-9]{128}$");
+    }
+
 }

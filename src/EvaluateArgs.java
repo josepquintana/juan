@@ -8,18 +8,16 @@ import java.util.Scanner;
 
 public class EvaluateArgs
 {
-    private static ArrayList<String> types;
-    private static ArrayList<String> modes;
 
     public static String[] evaluateArgs(String[] args) throws Exception {
 
-        types = new ArrayList<>(); setTypes();
-        modes = new ArrayList<>(); setModes();
+        Main.types = new ArrayList<>(); setTypes();
+        Main.modes = new ArrayList<>(); setModes();
 
-        String[] flags = new String[7]; // [n, /path/to/file, type_hash, mode, p, i, v]
-        flags[0] = "0"; flags[1] = ""; flags[2] = ""; flags[3] = "all"; flags[4] = "2000"; flags[5] = "no"; flags[6] = "no";
+        String[] flags = new String[8]; // [n, /path/to/file, type_hash, mode, p, i, v, write_to_file]
+        flags[0] = "0"; flags[1] = ""; flags[2] = ""; flags[3] = "all"; flags[4] = "2000"; flags[5] = "no"; flags[6] = "no"; flags[7] = "no";
 
-        boolean n = false, f = false, t = false, m = false, p = false, e = false, v = false;
+        boolean n = false, f = false, t = false, m = false, p = false, e = false, v = false, w = false;
         for (int i = 0; i < args.length; i++)
         {
             if      (args[i].equals("-h") || args[i].equals("--help")) { printUsageAndExit(); }
@@ -34,7 +32,13 @@ public class EvaluateArgs
             else if (args[i].equals("-f") || args[i].equals("--file")) {
                 if(f) printErrorDuplicateFlagAndExit(args[i]);
                 if(i + 1 >= args.length) printUsageAndExit();
-                if(!isValidPath(args[i+1])) printInvalidPathAndExit(args[i+1]);
+                if(!isValidPath(args[i+1])) {
+                    if(!Hash.isValidHash(args[i+1], "ALL")) {
+                        printInvalidPathOrHashAndExit(args[i+1]);
+                    }
+                    else Main.hashInFile = false; // "hash" passed by program argument is valid.
+                }
+                else Main.hashInFile = true; // "hash" is stored in a file
                 flags[1] = args[i+1]; ++i;
                 f = true;
             }
@@ -69,8 +73,13 @@ public class EvaluateArgs
                 flags[6] = "yes";
                 v = true;
             }
+            else if (args[i].equals("-w") || args[i].equals("--write_to_file")) {
+                if(w) printErrorDuplicateFlagAndExit(args[i]);
+                flags[7] = "yes";
+                w = true;
+            }
             else {
-                System.out.println(" > Error: Unknown specified flag '" + args[i] + "'.");
+                System.out.println(" > Error: Unknown specified flag '" + args[i] + "'. Please run \"juan.jar --help\".");
                 System.exit(0);
             }
         }
@@ -121,9 +130,9 @@ public class EvaluateArgs
         System.exit(0);
     }
 
-    private static void printInvalidPathAndExit(String path) {
+    private static void printInvalidPathOrHashAndExit(String path) {
         if (!Paths.get(path).isAbsolute()) path = "./" + path;
-        System.out.println(" > Error: The file path '" + path + "' is not valid.");
+        System.out.println(" > Error: '" + path + "' is not valid file path nor a valid hash.");
         System.exit(0);
     }
 
@@ -144,18 +153,20 @@ public class EvaluateArgs
         System.exit(0);
     }
 
-    private static void printUsageAndExit() throws Exception {
+    private static void printUsageAndExit() {
         System.out.println(" Usage: java -jar juan.jar ");
         System.out.println("");
         System.out.println("    -h, --help");
         System.out.println("    -s, --show_config");
         System.out.println("    -n, --number 'NUM'");
-        System.out.println("    -f, --file '/path/to/input/file'");
         System.out.println("    -t, --type_hash");
         System.out.println("    -m, --mode");
         System.out.println("    -i, --incremental");
         System.out.println("    -p, --print_interval 'NUM'");
         System.out.println("    -v, --verbose");
+        System.out.println("    -w, --write_to_file");
+        System.out.println("    -f, --file '/path/to/input/file'");
+        System.out.println("               ` echo <passwd_plain_text> | tr -d '\\n' | sha256sum | cut -f 1 -d ' ' `   # only bash terminal");
         System.out.println("");
         System.exit(0);
     }
@@ -163,32 +174,32 @@ public class EvaluateArgs
     private static void printConfigAndExit() throws InterruptedException {
         System.out.println(" > Modes: \n");
         System.out.print(" ");
-        for (int i = 0; i < modes.size(); i++) {
-            System.out.print(modes.get(i) + "    ");
+        for (int i = 0; i < Main.modes.size(); i++) {
+            System.out.print(Main.modes.get(i) + "    ");
         }
         Thread.sleep(250);
         System.out.println("\n\n > Known hash types: \n");
         System.out.print(" ");
-        for (int i = 0; i < types.size(); i++) {
-            System.out.print(types.get(i) + "      ");
+        for (int i = 0; i < Main.types.size(); i++) {
+            System.out.print(Main.types.get(i) + "      ");
         }
         System.out.println("\n");
         System.exit(0);
     }
 
     private static void setTypes() {
-        types.add("md5");
-        types.add("sha1");
-        types.add("sha256");
-        types.add("sha512");
+        Main.types.add("md5");
+        Main.types.add("sha1");
+        Main.types.add("sha256");
+        Main.types.add("sha512");
     }
 
     private static void setModes() {
-        modes.add("all");
-        modes.add("numbers");
-        modes.add("letters");
-        modes.add("lowercase");
-        modes.add("uppercase");
+        Main.modes.add("all");
+        Main.modes.add("numbers");
+        Main.modes.add("letters");
+        Main.modes.add("lowercase");
+        Main.modes.add("uppercase");
     }
 
     private static boolean isValidNumber(String s) {
@@ -204,20 +215,20 @@ public class EvaluateArgs
 
     private static boolean isValidPath(String s) {
         Path path = Paths.get(s).toAbsolutePath().normalize();
-        // check that the file exists and is a readable
+        // check that the file exists and is readable
         return (Files.exists(path) && Files.isReadable(path));
     }
 
     private static boolean isKnownHash(String s) {
-        for (int i = 0; i < types.size(); i++) {
-            if(types.get(i).equalsIgnoreCase(s)) return true;
+        for (int i = 0; i < Main.types.size(); i++) {
+            if(Main.types.get(i).equalsIgnoreCase(s)) return true;
         }
         return false;
     }
 
     private static boolean isKnownMode(String s) {
-        for (int i = 0; i < modes.size(); i++) {
-            if(modes.get(i).equalsIgnoreCase(s)) return true;
+        for (int i = 0; i < Main.modes.size(); i++) {
+            if(Main.modes.get(i).equalsIgnoreCase(s)) return true;
         }
         return false;
     }
@@ -232,4 +243,5 @@ public class EvaluateArgs
         }
         return true;
     }
+
 }
