@@ -6,9 +6,12 @@ Basic program simulating "john the ripper"
     -h, --help
     -s, --show_config
     -n, --number 'NUM'
-    -f, --file '/path/to/input/file'
     -t, --type_hash
     -m, --mode
     -i, --incremental
     -p, --print_interval 'NUM'
     -v, --verbose
+    -w, --write_to_file
+    -f, --file '/path/to/input/file'
+               ` echo <passwd_plain_text> | tr -d '\n' | sha256sum | cut -f 1 -d ' ' `   # only bash terminal
+         
